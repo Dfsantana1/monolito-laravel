@@ -29,7 +29,15 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Carrito de Compras</h2>
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                            <span class="mr-2">🛒</span>
+                            Carrito de Compras
+                        </h2>
+                        <span class="bg-indigo-100 text-indigo-800 text-sm font-medium px-3 py-1 rounded-full">
+                            {{ $cartItems->count() }} {{ $cartItems->count() == 1 ? 'producto' : 'productos' }}
+                        </span>
+                    </div>
 
                     @if($cartItems->count() > 0)
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
