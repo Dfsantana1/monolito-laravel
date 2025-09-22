@@ -2,63 +2,78 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        $query = Product::with('category')->where('is_active', true);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        // Filtro por categoría
+        if ($request->has('category') && $request->category) {
+            $query->where('category_id', $request->category);
+        }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+        // Filtro por búsqueda
+        if ($request->has('search') && $request->search) {
+            $query->where(function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('description', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Filtro por precio
+        if ($request->has('min_price') && $request->min_price) {
+            $query->where('price', '>=', $request->min_price);
+        }
+        if ($request->has('max_price') && $request->max_price) {
+            $query->where('price', '<=', $request->max_price);
+        }
+
+        // Ordenamiento
+        $sort = $request->get('sort', 'created_at');
+        $direction = $request->get('direction', 'desc');
+        $query->orderBy($sort, $direction);
+
+        $products = $query->paginate(12);
+        $categories = Category::where('is_active', true)->get();
+
+        return view('products.index', compact('products', 'categories'));
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Product $product)
     {
-        //
+        $product->load('category');
+        $relatedProducts = Product::where('category_id', $product->category_id)
+            ->where('id', '!=', $product->id)
+            ->where('is_active', true)
+            ->limit(4)
+            ->get();
+
+        return view('products.show', compact('product', 'relatedProducts'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show featured products
      */
-    public function edit(string $id)
+    public function featured()
     {
-        //
-    }
+        $products = Product::with('category')
+            ->where('is_active', true)
+            ->where('is_featured', true)
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return view('products.featured', compact('products'));
     }
 }
