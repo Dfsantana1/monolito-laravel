@@ -31,56 +31,94 @@
                 <!-- Formulario de checkout -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Información de Envío y Facturación</h2>
+                        <div class="flex items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                                <span class="mr-3">📝</span>
+                                Información de Envío y Facturación
+                            </h2>
+                        </div>
+                        
+                        <!-- Progreso del checkout -->
+                        <div class="mb-8">
+                            <div class="flex items-center justify-center space-x-4">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                                    <span class="ml-2 text-sm font-medium text-indigo-600">Información</span>
+                                </div>
+                                <div class="w-16 h-1 bg-gray-300"></div>
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                                    <span class="ml-2 text-sm font-medium text-gray-500">Pago</span>
+                                </div>
+                                <div class="w-16 h-1 bg-gray-300"></div>
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                                    <span class="ml-2 text-sm font-medium text-gray-500">Confirmación</span>
+                                </div>
+                            </div>
+                        </div>
                         
                         <form method="POST" action="{{ route('orders.store') }}">
                             @csrf
                             
                             <!-- Información de facturación -->
                             <div class="mb-8">
-                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Información de Facturación</h3>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                    <span class="mr-2">💳</span>
+                                    Información de Facturación
+                                </h3>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label for="billing_name" class="block text-sm font-medium text-gray-700">Nombre completo *</label>
+                                        <label for="billing_name" class="block text-sm font-medium text-gray-700 mb-1">Nombre completo *</label>
                                         <input type="text" name="billing_name" id="billing_name" required
-                                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                               placeholder="Ej: Juan Pérez"
+                                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2">
                                     </div>
                                     <div>
-                                        <label for="billing_email" class="block text-sm font-medium text-gray-700">Email *</label>
+                                        <label for="billing_email" class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
                                         <input type="email" name="billing_email" id="billing_email" required
-                                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                               placeholder="juan@ejemplo.com"
+                                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2">
                                     </div>
                                     <div>
-                                        <label for="billing_phone" class="block text-sm font-medium text-gray-700">Teléfono *</label>
+                                        <label for="billing_phone" class="block text-sm font-medium text-gray-700 mb-1">Teléfono *</label>
                                         <input type="tel" name="billing_phone" id="billing_phone" required
-                                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                               placeholder="+1 234 567 8900"
+                                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2">
                                     </div>
                                     <div>
-                                        <label for="billing_postal_code" class="block text-sm font-medium text-gray-700">Código postal *</label>
+                                        <label for="billing_postal_code" class="block text-sm font-medium text-gray-700 mb-1">Código postal *</label>
                                         <input type="text" name="billing_postal_code" id="billing_postal_code" required
-                                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                               placeholder="12345"
+                                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2">
                                     </div>
                                     <div class="md:col-span-2">
-                                        <label for="billing_address" class="block text-sm font-medium text-gray-700">Dirección *</label>
+                                        <label for="billing_address" class="block text-sm font-medium text-gray-700 mb-1">Dirección *</label>
                                         <textarea name="billing_address" id="billing_address" rows="2" required
-                                                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                                                  placeholder="Calle, número, colonia..."
+                                                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2"></textarea>
                                     </div>
                                     <div>
-                                        <label for="billing_city" class="block text-sm font-medium text-gray-700">Ciudad *</label>
+                                        <label for="billing_city" class="block text-sm font-medium text-gray-700 mb-1">Ciudad *</label>
                                         <input type="text" name="billing_city" id="billing_city" required
-                                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                               placeholder="Ciudad"
+                                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2">
                                     </div>
                                     <div>
-                                        <label for="billing_state" class="block text-sm font-medium text-gray-700">Estado *</label>
+                                        <label for="billing_state" class="block text-sm font-medium text-gray-700 mb-1">Estado *</label>
                                         <input type="text" name="billing_state" id="billing_state" required
-                                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                               placeholder="Estado"
+                                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2">
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Información de envío -->
                             <div class="mb-8">
-                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Información de Envío</h3>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                    <span class="mr-2">📦</span>
+                                    Información de Envío
+                                </h3>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label for="shipping_name" class="block text-sm font-medium text-gray-700">Nombre completo *</label>
@@ -146,7 +184,8 @@
                             </div>
 
                             <button type="submit" 
-                                    class="w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 font-medium">
+                                    class="w-full bg-indigo-600 text-white py-4 px-6 rounded-md hover:bg-indigo-700 font-medium text-lg flex items-center justify-center">
+                                <span class="mr-2">✅</span>
                                 Confirmar Pedido
                             </button>
                         </form>
@@ -156,7 +195,10 @@
                 <!-- Resumen del pedido -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Resumen del Pedido</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <span class="mr-2">📋</span>
+                            Resumen del Pedido
+                        </h3>
                         
                         <div class="space-y-4 mb-6">
                             @foreach($cartItems as $item)

@@ -44,48 +44,56 @@
                             <!-- Items del carrito -->
                             <div class="lg:col-span-2">
                                 @foreach($cartItems as $item)
-                                    <div class="flex items-center space-x-4 py-4 border-b border-gray-200">
+                                    <div class="flex items-center space-x-4 py-6 border-b border-gray-200 hover:bg-gray-50 transition-colors">
                                         @if(!empty($item->product->images) && is_array($item->product->images))
                                             <img src="{{ $item->product->images[0] }}" 
                                                  alt="{{ $item->product->name }}" 
-                                                 class="w-20 h-20 object-cover rounded-lg"
+                                                 class="w-24 h-24 object-cover rounded-lg shadow-sm"
                                                  onerror="this.src='https://via.placeholder.com/100x100?text={{ urlencode($item->product->name) }}'">
                                         @else
                                             <img src="https://via.placeholder.com/100x100?text={{ urlencode($item->product->name) }}" 
                                                  alt="{{ $item->product->name }}" 
-                                                 class="w-20 h-20 object-cover rounded-lg">
+                                                 class="w-24 h-24 object-cover rounded-lg shadow-sm">
                                         @endif
                                         
                                         <div class="flex-1">
-                                            <h3 class="text-lg font-semibold text-gray-900">{{ $item->product->name }}</h3>
-                                            <p class="text-sm text-gray-600">{{ $item->product->category->name }}</p>
-                                            <p class="text-sm text-gray-500">SKU: {{ $item->product->sku }}</p>
+                                            <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ $item->product->name }}</h3>
+                                            <p class="text-sm text-gray-600 mb-1">📂 {{ $item->product->category->name }}</p>
+                                            <p class="text-xs text-gray-500">SKU: {{ $item->product->sku }}</p>
+                                            <div class="mt-2">
+                                                <span class="text-sm text-gray-500">Stock disponible: </span>
+                                                <span class="text-sm font-medium {{ $item->product->stock > 10 ? 'text-green-600' : ($item->product->stock > 0 ? 'text-yellow-600' : 'text-red-600') }}">
+                                                    {{ $item->product->stock }}
+                                                </span>
+                                            </div>
                                         </div>
 
                                         <div class="flex items-center space-x-4">
-                                            <form action="{{ route('cart.update', $item) }}" method="POST" class="flex items-center space-x-2">
+                                            <form action="{{ route('cart.update', $item) }}" method="POST" class="flex items-center space-x-3">
                                                 @csrf
                                                 @method('PATCH')
                                                 <label for="quantity_{{ $item->id }}" class="text-sm font-medium text-gray-700">Cantidad:</label>
                                                 <input type="number" name="quantity" id="quantity_{{ $item->id }}" 
                                                        value="{{ $item->quantity }}" min="1" max="{{ $item->product->stock }}" 
-                                                       class="w-16 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                                <button type="submit" class="text-indigo-600 hover:text-indigo-800 text-sm">
-                                                    Actualizar
+                                                       class="w-20 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-center">
+                                                <button type="submit" class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-md hover:bg-indigo-200 text-sm font-medium">
+                                                    ✏️ Actualizar
                                                 </button>
                                             </form>
                                         </div>
 
                                         <div class="text-right">
-                                            <p class="text-lg font-semibold text-gray-900">${{ number_format($item->total, 2) }}</p>
+                                            <p class="text-xl font-bold text-gray-900">${{ number_format($item->total, 2) }}</p>
                                             <p class="text-sm text-gray-500">${{ number_format($item->price, 2) }} c/u</p>
                                         </div>
 
                                         <form action="{{ route('cart.remove', $item) }}" method="POST" class="inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-800 text-sm">
-                                                Eliminar
+                                            <button type="submit" 
+                                                    class="bg-red-100 text-red-700 px-3 py-2 rounded-md hover:bg-red-200 text-sm font-medium flex items-center"
+                                                    onclick="return confirm('¿Estás seguro de que quieres eliminar este producto del carrito?')">
+                                                🗑️ Eliminar
                                             </button>
                                         </form>
                                     </div>
@@ -104,46 +112,68 @@
 
                             <!-- Resumen del pedido -->
                             <div class="lg:col-span-1">
-                                <div class="bg-gray-50 p-6 rounded-lg">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Resumen del pedido</h3>
+                                <div class="bg-gradient-to-br from-indigo-50 to-blue-50 p-6 rounded-lg border border-indigo-200">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                        <span class="mr-2">📋</span>
+                                        Resumen del pedido
+                                    </h3>
                                     
-                                    <div class="space-y-2 mb-4">
-                                        <div class="flex justify-between">
+                                    <div class="space-y-3 mb-6">
+                                        <div class="flex justify-between items-center">
                                             <span class="text-gray-600">Subtotal:</span>
-                                            <span class="font-medium">${{ number_format($subtotal, 2) }}</span>
+                                            <span class="font-semibold text-gray-900">${{ number_format($subtotal, 2) }}</span>
                                         </div>
-                                        <div class="flex justify-between">
+                                        <div class="flex justify-between items-center">
                                             <span class="text-gray-600">IVA (16%):</span>
-                                            <span class="font-medium">${{ number_format($tax, 2) }}</span>
+                                            <span class="font-semibold text-gray-900">${{ number_format($tax, 2) }}</span>
                                         </div>
-                                        <div class="flex justify-between">
+                                        <div class="flex justify-between items-center">
                                             <span class="text-gray-600">Envío:</span>
-                                            <span class="font-medium">
+                                            <span class="font-semibold {{ $shipping > 0 ? 'text-gray-900' : 'text-green-600' }}">
                                                 @if($shipping > 0)
                                                     ${{ number_format($shipping, 2) }}
                                                 @else
-                                                    Gratis
+                                                    🎉 Gratis
                                                 @endif
                                             </span>
                                         </div>
-                                        <div class="border-t pt-2">
-                                            <div class="flex justify-between text-lg font-bold">
+                                        <div class="border-t border-gray-300 pt-3">
+                                            <div class="flex justify-between items-center text-xl font-bold text-gray-900">
                                                 <span>Total:</span>
-                                                <span>${{ number_format($total, 2) }}</span>
+                                                <span class="text-indigo-600">${{ number_format($total, 2) }}</span>
                                             </div>
                                         </div>
                                     </div>
 
                                     @if($shipping > 0)
-                                        <p class="text-sm text-gray-600 mb-4">
-                                            ¡Agrega ${{ number_format(1000 - $subtotal, 2) }} más para envío gratis!
-                                        </p>
+                                        <div class="bg-yellow-100 border border-yellow-300 rounded-md p-3 mb-4">
+                                            <p class="text-sm text-yellow-800 flex items-center">
+                                                <span class="mr-2">💡</span>
+                                                ¡Agrega ${{ number_format(1000 - $subtotal, 2) }} más para envío gratis!
+                                            </p>
+                                        </div>
+                                    @else
+                                        <div class="bg-green-100 border border-green-300 rounded-md p-3 mb-4">
+                                            <p class="text-sm text-green-800 flex items-center">
+                                                <span class="mr-2">🎉</span>
+                                                ¡Tienes envío gratis!
+                                            </p>
+                                        </div>
                                     @endif
 
-                                    <a href="{{ route('orders.checkout') }}" 
-                                       class="w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 font-medium text-center block">
-                                        Proceder al pago
-                                    </a>
+                                    <div class="space-y-3">
+                                        <a href="{{ route('orders.checkout') }}" 
+                                           class="w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 font-medium text-center block flex items-center justify-center">
+                                            <span class="mr-2">💳</span>
+                                            Proceder al pago
+                                        </a>
+                                        
+                                        <a href="{{ route('products.index') }}" 
+                                           class="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-200 font-medium text-center block flex items-center justify-center">
+                                            <span class="mr-2">🛍️</span>
+                                            Continuar comprando
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

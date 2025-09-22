@@ -34,10 +34,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/{order}/payment/failure', [PaymentController::class, 'failure'])->name('payments.failure');
 });
 
-// Dashboard (requiere autenticación)
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Dashboard (requiere autenticación) - Redirige a productos
+Route::get('/dashboard', [ProductController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 // Perfil de usuario (requiere autenticación)
 Route::middleware('auth')->group(function () {
