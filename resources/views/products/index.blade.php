@@ -4,170 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo de Productos - Ecommerce</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .product-card {
-            transition: transform 0.2s ease-in-out;
-            border: none;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-        .product-image {
-            height: 200px;
-            object-fit: cover;
-            border-radius: 8px 8px 0 0;
-        }
-        .discount-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 2;
-        }
-        .featured-badge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 2;
-        }
-        .filter-section {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: #6c757d;
-        }
-        .empty-state i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            color: #dee2e6;
-        }
-    </style>
 </head>
-<body class="bg-light">
+<body class="bg-gray-100">
     <!-- Header -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ route('home') }}">
-                <i class="fas fa-shopping-bag me-2"></i>Ecommerce
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('home') }}">
-                            <i class="fas fa-home me-1"></i>Inicio
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('products.index') }}">
-                            <i class="fas fa-box me-1"></i>Productos
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('products.featured') }}">
-                            <i class="fas fa-star me-1"></i>Destacados
-                        </a>
-                    </li>
-                </ul>
-                
-                <ul class="navbar-nav">
+    <header class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <div class="flex items-center">
+                    <a href="{{ route('home') }}" class="text-3xl font-bold text-gray-900 flex items-center">
+                        <i class="fas fa-shopping-bag mr-2 text-blue-600"></i>Ecommerce
+                    </a>
+                </div>
+                <nav class="flex space-x-4">
+                    <a href="{{ route('home') }}" class="text-blue-600 font-medium flex items-center">
+                        <i class="fas fa-home mr-1"></i>Inicio
+                    </a>
+                    <a href="{{ route('products.index') }}" class="text-gray-700 hover:text-gray-900 flex items-center">
+                        <i class="fas fa-box mr-1"></i>Productos
+                    </a>
                     @if(auth()->check())
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('cart.index') }}">
-                                <i class="fas fa-shopping-cart me-1"></i>Carrito
-                                @if(auth()->user()->cartItems->count() > 0)
-                                    <span class="badge bg-warning text-dark">{{ auth()->user()->cartItems->count() }}</span>
-                                @endif
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('orders.index') }}">
-                                <i class="fas fa-receipt me-1"></i>Mis Pedidos
-                            </a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user me-1"></i>{{ auth()->user()->name }}
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ route('profile.edit') }}">
-                                    <i class="fas fa-user-edit me-2"></i>Perfil
-                                </a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item">
-                                            <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
+                        <a href="{{ route('cart.index') }}" class="text-gray-700 hover:text-gray-900 flex items-center">
+                            <i class="fas fa-shopping-cart mr-1"></i>Carrito
+                            @if(auth()->user()->cartItems->count() > 0)
+                                <span class="bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-full ml-1">{{ auth()->user()->cartItems->count() }}</span>
+                            @endif
+                        </a>
+                        <a href="{{ route('orders.index') }}" class="text-gray-700 hover:text-gray-900 flex items-center">
+                            <i class="fas fa-receipt mr-1"></i>Mis Pedidos
+                        </a>
+                        <div class="relative group">
+                            <button class="text-gray-700 hover:text-gray-900 flex items-center">
+                                <i class="fas fa-user mr-1"></i>{{ auth()->user()->name }}
+                                <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                            </button>
+                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-user-edit mr-2"></i>Perfil
+                                </a>
+                                <hr class="my-1">
+                                <form method="POST" action="{{ route('logout') }}" class="block">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     @else
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">
-                                <i class="fas fa-sign-in-alt me-1"></i>Iniciar Sesión
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">
-                                <i class="fas fa-user-plus me-1"></i>Registrarse
-                            </a>
-                        </li>
+                        <a href="{{ route('login') }}" class="text-gray-700 hover:text-gray-900 flex items-center">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Iniciar Sesión
+                        </a>
+                        <a href="{{ route('register') }}" class="text-gray-700 hover:text-gray-900 flex items-center">
+                            <i class="fas fa-user-plus mr-1"></i>Registrarse
+                        </a>
                     @endif
-                </ul>
+                </nav>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <!-- Main Content -->
-    <div class="container my-5">
-        <!-- Mensajes de éxito/error -->
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Mensajes de éxito/error -->
+            @if(session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+                    <i class="fas fa-check-circle mr-2"></i>{{ session('success') }}
+                </div>
+            @endif
 
-        @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
+            @if(session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                    <i class="fas fa-exclamation-circle mr-2"></i>{{ session('error') }}
+                </div>
+            @endif
 
-        <!-- Filtros -->
-        <div class="card filter-section">
-            <div class="card-body">
-                <h2 class="h4 mb-4">
-                    <i class="fas fa-search me-2"></i>Buscar Productos
-                </h2>
-                <form method="GET" action="{{ route('products.index') }}">
-                    <div class="row g-3">
-                        <div class="col-md-3">
-                            <label for="search" class="form-label">Buscar por nombre</label>
+            <!-- Filtros -->
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
+                <div class="p-6">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-search mr-2"></i>Buscar Productos
+                    </h2>
+                    <form method="GET" action="{{ route('products.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label for="search" class="block text-sm font-medium text-gray-700">Buscar por nombre</label>
                             <input type="text" name="search" id="search" value="{{ request('search') }}" 
                                    placeholder="Ej: iPhone, camiseta..."
-                                   class="form-control">
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                         </div>
                         
-                        <div class="col-md-3">
-                            <label for="category" class="form-label">Categoría</label>
-                            <select name="category" id="category" class="form-select">
+                        <div>
+                            <label for="category" class="block text-sm font-medium text-gray-700">Categoría</label>
+                            <select name="category" id="category" 
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                                 <option value="">Todas las categorías</option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
@@ -177,167 +107,147 @@
                             </select>
                         </div>
                         
-                        <div class="col-md-3">
-                            <label for="min_price" class="form-label">Precio mínimo</label>
+                        <div>
+                            <label for="min_price" class="block text-sm font-medium text-gray-700">Precio mínimo</label>
                             <input type="number" name="min_price" id="min_price" value="{{ request('min_price') }}" 
-                                   placeholder="0" min="0" step="0.01" class="form-control">
+                                   placeholder="0" min="0" step="0.01"
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                         </div>
                         
-                        <div class="col-md-3">
-                            <label for="max_price" class="form-label">Precio máximo</label>
+                        <div>
+                            <label for="max_price" class="block text-sm font-medium text-gray-700">Precio máximo</label>
                             <input type="number" name="max_price" id="max_price" value="{{ request('max_price') }}" 
-                                   placeholder="1000" min="0" step="0.01" class="form-control">
+                                   placeholder="1000" min="0" step="0.01"
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                         </div>
                         
-                        <div class="col-12">
-                            <div class="d-flex flex-wrap gap-2">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-search me-1"></i>Filtrar
-                                </button>
-                                <a href="{{ route('products.index') }}" class="btn btn-outline-secondary">
-                                    <i class="fas fa-times me-1"></i>Limpiar
-                                </a>
-                                <a href="{{ route('products.featured') }}" class="btn btn-warning">
-                                    <i class="fas fa-star me-1"></i>Destacados
-                                </a>
-                            </div>
+                        <div class="md:col-span-4 flex flex-wrap gap-2">
+                            <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 flex items-center">
+                                <i class="fas fa-search mr-2"></i>Filtrar
+                            </button>
+                            <a href="{{ route('products.index') }}" class="bg-gray-300 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-400 flex items-center">
+                                <i class="fas fa-times mr-2"></i>Limpiar
+                            </a>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
 
-        <!-- Contador de resultados -->
-        @if($products->count() > 0)
-            <div class="mb-3">
-                <p class="text-muted">
-                    <i class="fas fa-info-circle me-1"></i>
-                    Mostrando {{ $products->count() }} de {{ $products->total() }} productos
-                </p>
-            </div>
-        @endif
+            <!-- Contador de resultados -->
+            @if($products->count() > 0)
+                <div class="mb-4">
+                    <p class="text-sm text-gray-600">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Mostrando {{ $products->count() }} de {{ $products->total() }} productos
+                    </p>
+                </div>
+            @endif
 
-        <!-- Grid de productos -->
-        <div class="row g-4">
-            @forelse($products as $product)
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="card product-card h-100">
-                        <div class="position-relative">
+            <!-- Grid de productos -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                @forelse($products as $product)
+                    <div class="bg-white overflow-hidden shadow-sm rounded-lg hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                        <div class="relative">
                             @if(!empty($product->images) && is_array($product->images))
                                 <img src="{{ $product->images[0] }}" 
                                      alt="{{ $product->name }}" 
-                                     class="product-image card-img-top"
+                                     class="w-full h-48 object-cover"
                                      onerror="this.src='https://via.placeholder.com/300x300?text={{ urlencode($product->name) }}'">
                             @else
                                 <img src="https://via.placeholder.com/300x300?text={{ urlencode($product->name) }}" 
                                      alt="{{ $product->name }}" 
-                                     class="product-image card-img-top">
+                                     class="w-full h-48 object-cover">
                             @endif
                             
                             @if($product->is_featured)
-                                <span class="featured-badge badge bg-warning text-dark">
-                                    <i class="fas fa-star me-1"></i>Destacado
-                                </span>
+                                <div class="absolute top-2 right-2">
+                                    <span class="bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-full flex items-center">
+                                        <i class="fas fa-star mr-1"></i>Destacado
+                                    </span>
+                                </div>
                             @endif
                             
                             @if($product->sale_price)
-                                <span class="discount-badge badge bg-danger">
-                                    -{{ $product->discount_percentage }}% OFF
-                                </span>
+                                <div class="absolute top-2 left-2">
+                                    <span class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                        -{{ $product->discount_percentage }}% OFF
+                                    </span>
+                                </div>
                             @endif
                         </div>
                         
-                        <div class="card-body d-flex flex-column">
+                        <div class="p-4">
                             <div class="mb-2">
-                                <h5 class="card-title">{{ $product->name }}</h5>
-                                <p class="text-muted small mb-2">
-                                    <i class="fas fa-folder me-1"></i>{{ $product->category->name }}
+                                <h3 class="text-lg font-semibold text-gray-900 line-clamp-2">{{ $product->name }}</h3>
+                                <p class="text-sm text-gray-500 mt-1">
+                                    <i class="fas fa-folder mr-1"></i>{{ $product->category->name }}
                                 </p>
                             </div>
                             
-                            <div class="mb-3">
+                            <div class="flex items-center mb-3">
                                 @if($product->sale_price)
-                                    <span class="h5 text-danger fw-bold">${{ number_format($product->sale_price, 2) }}</span>
-                                    <span class="text-muted text-decoration-line-through ms-2">${{ number_format($product->price, 2) }}</span>
+                                    <span class="text-2xl font-bold text-red-600">${{ number_format($product->sale_price, 2) }}</span>
+                                    <span class="text-lg text-gray-500 line-through ml-2">${{ number_format($product->price, 2) }}</span>
                                 @else
-                                    <span class="h5 text-dark fw-bold">${{ number_format($product->price, 2) }}</span>
+                                    <span class="text-2xl font-bold text-gray-900">${{ number_format($product->price, 2) }}</span>
                                 @endif
                             </div>
                             
-                            <p class="card-text text-muted small mb-3">{{ Str::limit($product->description, 80) }}</p>
+                            <p class="text-sm text-gray-600 mb-4 line-clamp-2">{{ Str::limit($product->description, 80) }}</p>
                             
-                            <div class="mb-3">
-                                <small class="text-muted">
-                                    <i class="fas fa-box me-1"></i>
-                                    <span class="{{ $product->stock > 10 ? 'text-success' : ($product->stock > 0 ? 'text-warning' : 'text-danger') }}">
+                            <div class="flex justify-between items-center mb-3">
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i class="fas fa-box mr-2"></i>
+                                    <span class="{{ $product->stock > 10 ? 'text-green-600' : ($product->stock > 0 ? 'text-yellow-600' : 'text-red-600') }}">
                                         {{ $product->stock > 0 ? $product->stock . ' disponibles' : 'Sin stock' }}
                                     </span>
-                                </small>
+                                </div>
                             </div>
                             
-                            <div class="mt-auto">
+                            <div class="space-y-2">
                                 @if(auth()->check())
-                                    <form action="{{ route('cart.add', $product) }}" method="POST" class="mb-2">
+                                    <form action="{{ route('cart.add', $product) }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="quantity" value="1" min="1" max="{{ $product->stock }}">
                                         <button type="submit" 
-                                                class="btn btn-primary w-100 {{ $product->stock == 0 ? 'disabled' : '' }}"
+                                                class="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 text-sm font-medium flex items-center justify-center {{ $product->stock == 0 ? 'opacity-50 cursor-not-allowed' : '' }}"
                                                 {{ $product->stock == 0 ? 'disabled' : '' }}>
-                                            <i class="fas fa-shopping-cart me-1"></i>
+                                            <i class="fas fa-shopping-cart mr-2"></i>
                                             {{ $product->stock == 0 ? 'Sin stock' : 'Agregar al carrito' }}
                                         </button>
                                     </form>
                                 @else
-                                    <a href="{{ route('login') }}" class="btn btn-secondary w-100 mb-2">
-                                        <i class="fas fa-lock me-1"></i>Iniciar sesión para comprar
+                                    <a href="{{ route('login') }}" 
+                                       class="w-full bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm font-medium flex items-center justify-center">
+                                        <i class="fas fa-lock mr-2"></i>Iniciar sesión para comprar
                                     </a>
                                 @endif
                                 
                                 <a href="{{ route('products.show', $product) }}" 
-                                   class="btn btn-outline-primary w-100">
-                                    <i class="fas fa-eye me-1"></i>Ver detalles
+                                   class="w-full text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center justify-center border border-indigo-300 rounded-md py-2 hover:bg-indigo-50">
+                                    <i class="fas fa-eye mr-2"></i>Ver detalles
                                 </a>
                             </div>
                         </div>
                     </div>
-                </div>
-            @empty
-                <div class="col-12">
-                    <div class="empty-state">
-                        <i class="fas fa-search"></i>
-                        <h3>No se encontraron productos</h3>
-                        <p class="lead">Intenta ajustar tus filtros de búsqueda</p>
-                        <a href="{{ route('products.index') }}" class="btn btn-primary btn-lg">
-                            <i class="fas fa-list me-2"></i>Ver todos los productos
+                @empty
+                    <div class="col-span-full text-center py-12">
+                        <div class="text-6xl mb-4">🔍</div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">No se encontraron productos</h3>
+                        <p class="text-gray-500 mb-4">Intenta ajustar tus filtros de búsqueda</p>
+                        <a href="{{ route('products.index') }}" 
+                           class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700">
+                            Ver todos los productos
                         </a>
                     </div>
-                </div>
-            @endforelse
-        </div>
+                @endforelse
+            </div>
 
-        <!-- Paginación -->
-        @if($products->hasPages())
-            <div class="d-flex justify-content-center mt-4">
+            <!-- Paginación -->
+            <div class="mt-6">
                 {{ $products->links() }}
             </div>
-        @endif
-    </div>
-
-    <!-- Footer -->
-    <footer class="bg-dark text-light py-4 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5><i class="fas fa-shopping-bag me-2"></i>Ecommerce</h5>
-                    <p class="mb-0">Tu tienda online de confianza</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="mb-0">&copy; {{ date('Y') }} Ecommerce. Todos los derechos reservados.</p>
-                </div>
-            </div>
         </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </div>
 </body>
 </html>
