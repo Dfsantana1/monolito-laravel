@@ -4,311 +4,238 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Pedidos - Ecommerce</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .order-card {
-            transition: transform 0.2s ease-in-out;
-            border-left: 4px solid #007bff;
-        }
-        .order-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .status-badge {
-            font-size: 0.85rem;
-            padding: 0.5rem 1rem;
-        }
-        .order-item {
-            border-bottom: 1px solid #f8f9fa;
-            padding: 0.75rem 0;
-        }
-        .order-item:last-child {
-            border-bottom: none;
-        }
-        .product-image {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: #6c757d;
-        }
-        .empty-state i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            color: #dee2e6;
-        }
-    </style>
 </head>
-<body class="bg-light">
+<body class="bg-gray-100">
     <!-- Header -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ route('home') }}">
-                <i class="fas fa-shopping-bag me-2"></i>Ecommerce
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('home') }}">
-                            <i class="fas fa-home me-1"></i>Inicio
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('products.index') }}">
-                            <i class="fas fa-box me-1"></i>Productos
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('products.featured') }}">
-                            <i class="fas fa-star me-1"></i>Destacados
-                        </a>
-                    </li>
-                </ul>
-                
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('cart.index') }}">
-                            <i class="fas fa-shopping-cart me-1"></i>Carrito
-                            @if(auth()->check() && auth()->user()->cartItems->count() > 0)
-                                <span class="badge bg-warning text-dark">{{ auth()->user()->cartItems->count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('orders.index') }}">
-                            <i class="fas fa-receipt me-1"></i>Mis Pedidos
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user me-1"></i>{{ auth()->user()->name }}
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}">
-                                <i class="fas fa-user-edit me-2"></i>Perfil
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item">
-                                        <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="container my-5">
-        <div class="row">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="h3 mb-0">
-                        <i class="fas fa-receipt text-primary me-2"></i>Mis Pedidos
-                    </h1>
-                    <a href="{{ route('home') }}" class="btn btn-outline-primary">
-                        <i class="fas fa-arrow-left me-1"></i>Continuar Comprando
+    <header class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <div class="flex items-center">
+                    <a href="{{ route('home') }}" class="text-3xl font-bold text-gray-900 flex items-center">
+                        <i class="fas fa-shopping-bag mr-2 text-blue-600"></i>Ecommerce
                     </a>
                 </div>
-
-                @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <nav class="flex space-x-4">
+                    <a href="{{ route('home') }}" class="text-gray-700 hover:text-gray-900 flex items-center">
+                        <i class="fas fa-home mr-1"></i>Inicio
+                    </a>
+                    <a href="{{ route('products.index') }}" class="text-gray-700 hover:text-gray-900 flex items-center">
+                        <i class="fas fa-box mr-1"></i>Productos
+                    </a>
+                    <a href="{{ route('cart.index') }}" class="text-gray-700 hover:text-gray-900 flex items-center">
+                        <i class="fas fa-shopping-cart mr-1"></i>Carrito
+                        @if(auth()->check() && auth()->user()->cartItems->count() > 0)
+                            <span class="bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-full ml-1">{{ auth()->user()->cartItems->count() }}</span>
+                        @endif
+                    </a>
+                    <a href="{{ route('orders.index') }}" class="text-blue-600 font-medium flex items-center">
+                        <i class="fas fa-receipt mr-1"></i>Mis Pedidos
+                    </a>
+                    <div class="relative group">
+                        <button class="text-gray-700 hover:text-gray-900 flex items-center">
+                            <i class="fas fa-user mr-1"></i>{{ auth()->user()->name }}
+                            <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-user-edit mr-2"></i>Perfil
+                            </a>
+                            <hr class="my-1">
+                            <form method="POST" action="{{ route('logout') }}" class="block">
+                                @csrf
+                                <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                @endif
+                </nav>
+            </div>
+        </div>
+    </header>
 
-                @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+                    <i class="fas fa-receipt mr-2 text-blue-600"></i>Mis Pedidos
+                </h1>
+                <a href="{{ route('home') }}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 flex items-center">
+                    <i class="fas fa-arrow-left mr-1"></i>Continuar Comprando
+                </a>
+            </div>
 
-                @if($orders->count() > 0)
-                    <div class="row">
-                        @foreach($orders as $order)
-                            <div class="col-12 mb-4">
-                                <div class="card order-card">
-                                    <div class="card-header bg-white">
-                                        <div class="row align-items-center">
-                                            <div class="col-md-6">
-                                                <h5 class="mb-1">
-                                                    <i class="fas fa-hashtag text-muted me-2"></i>Pedido #{{ $order->order_number }}
-                                                </h5>
-                                                <small class="text-muted">
-                                                    <i class="fas fa-calendar me-1"></i>
-                                                    {{ $order->created_at->format('d/m/Y H:i') }}
-                                                </small>
-                                            </div>
-                                            <div class="col-md-6 text-md-end">
-                                                <span class="badge status-badge 
-                                                    @if($order->status == 'pending') bg-warning
-                                                    @elseif($order->status == 'processing') bg-info
-                                                    @elseif($order->status == 'shipped') bg-primary
-                                                    @elseif($order->status == 'delivered') bg-success
-                                                    @elseif($order->status == 'cancelled') bg-danger
-                                                    @endif">
-                                                    @switch($order->status)
-                                                        @case('pending') Pendiente @break
-                                                        @case('processing') Procesando @break
-                                                        @case('shipped') Enviado @break
-                                                        @case('delivered') Entregado @break
-                                                        @case('cancelled') Cancelado @break
-                                                    @endswitch
-                                                </span>
-                                                <div class="mt-2">
-                                                    <strong class="h5 text-success">${{ number_format($order->total, 2) }}</strong>
-                                                </div>
-                                            </div>
-                                        </div>
+            @if(session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+                    <i class="fas fa-check-circle mr-2"></i>{{ session('success') }}
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                    <i class="fas fa-exclamation-circle mr-2"></i>{{ session('error') }}
+                </div>
+            @endif
+
+            @if($orders->count() > 0)
+                <div class="space-y-6">
+                    @foreach($orders as $order)
+                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg hover:shadow-lg transition-all duration-300">
+                            <!-- Header del pedido -->
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                                    <div class="mb-2 md:mb-0">
+                                        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                                            <i class="fas fa-hashtag text-gray-500 mr-2"></i>Pedido #{{ $order->order_number }}
+                                        </h3>
+                                        <p class="text-sm text-gray-500 mt-1">
+                                            <i class="fas fa-calendar mr-1"></i>
+                                            {{ $order->created_at->format('d/m/Y H:i') }}
+                                        </p>
                                     </div>
-                                    
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-8">
-                                                <h6 class="text-muted mb-3">
-                                                    <i class="fas fa-box me-2"></i>Productos ({{ $order->orderItems->count() }})
-                                                </h6>
-                                                
-                                                @foreach($order->orderItems as $item)
-                                                    <div class="order-item">
-                                                        <div class="row align-items-center">
-                                                            <div class="col-2">
-                                                                @if($item->product && $item->product->images)
-                                                                    <img src="{{ $item->product->images[0] }}" 
-                                                                         alt="{{ $item->product_name }}" 
-                                                                         class="product-image">
-                                                                @else
-                                                                    <div class="product-image bg-light d-flex align-items-center justify-content-center">
-                                                                        <i class="fas fa-image text-muted"></i>
-                                                                    </div>
-                                                                @endif
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <h6 class="mb-1">{{ $item->product_name }}</h6>
-                                                                <small class="text-muted">SKU: {{ $item->product_sku }}</small>
-                                                            </div>
-                                                            <div class="col-2 text-center">
-                                                                <span class="badge bg-light text-dark">{{ $item->quantity }}</span>
-                                                            </div>
-                                                            <div class="col-2 text-end">
-                                                                <strong>${{ number_format($item->total, 2) }}</strong>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                            
-                                            <div class="col-md-4">
-                                                <div class="bg-light p-3 rounded">
-                                                    <h6 class="text-muted mb-3">
-                                                        <i class="fas fa-info-circle me-2"></i>Resumen
-                                                    </h6>
-                                                    
-                                                    <div class="d-flex justify-content-between mb-2">
-                                                        <span>Subtotal:</span>
-                                                        <span>${{ number_format($order->subtotal, 2) }}</span>
-                                                    </div>
-                                                    
-                                                    @if($order->tax > 0)
-                                                        <div class="d-flex justify-content-between mb-2">
-                                                            <span>Impuestos:</span>
-                                                            <span>${{ number_format($order->tax, 2) }}</span>
-                                                        </div>
-                                                    @endif
-                                                    
-                                                    @if($order->shipping > 0)
-                                                        <div class="d-flex justify-content-between mb-2">
-                                                            <span>Envío:</span>
-                                                            <span>${{ number_format($order->shipping, 2) }}</span>
-                                                        </div>
-                                                    @else
-                                                        <div class="d-flex justify-content-between mb-2 text-success">
-                                                            <span><i class="fas fa-gift me-1"></i>Envío:</span>
-                                                            <span>GRATIS</span>
-                                                        </div>
-                                                    @endif
-                                                    
-                                                    <hr>
-                                                    <div class="d-flex justify-content-between fw-bold">
-                                                        <span>Total:</span>
-                                                        <span class="text-success">${{ number_format($order->total, 2) }}</span>
-                                                    </div>
-                                                    
-                                                    <div class="mt-3">
-                                                        <a href="{{ route('orders.show', $order) }}" class="btn btn-outline-primary btn-sm w-100">
-                                                            <i class="fas fa-eye me-1"></i>Ver Detalles
-                                                        </a>
-                                                    </div>
-                                                    
-                                                    @if($order->status == 'pending')
-                                                        <div class="mt-2">
-                                                            <a href="{{ route('orders.show', $order) }}" class="btn btn-primary btn-sm w-100">
-                                                                <i class="fas fa-credit-card me-1"></i>Pagar Ahora
-                                                            </a>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
+                                    <div class="flex flex-col md:items-end">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium mb-2
+                                            @if($order->status == 'pending') bg-yellow-100 text-yellow-800
+                                            @elseif($order->status == 'processing') bg-blue-100 text-blue-800
+                                            @elseif($order->status == 'shipped') bg-indigo-100 text-indigo-800
+                                            @elseif($order->status == 'delivered') bg-green-100 text-green-800
+                                            @elseif($order->status == 'cancelled') bg-red-100 text-red-800
+                                            @endif">
+                                            @switch($order->status)
+                                                @case('pending') Pendiente @break
+                                                @case('processing') Procesando @break
+                                                @case('shipped') Enviado @break
+                                                @case('delivered') Entregado @break
+                                                @case('cancelled') Cancelado @break
+                                            @endswitch
+                                        </span>
+                                        <div class="text-2xl font-bold text-green-600">
+                                            ${{ number_format($order->total, 2) }}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
-                    </div>
-                    
-                    <!-- Pagination -->
-                    @if($orders->hasPages())
-                        <div class="d-flex justify-content-center mt-4">
-                            {{ $orders->links() }}
+                            
+                            <!-- Contenido del pedido -->
+                            <div class="p-6">
+                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                    <!-- Productos -->
+                                    <div class="lg:col-span-2">
+                                        <h4 class="text-sm font-medium text-gray-500 mb-4 flex items-center">
+                                            <i class="fas fa-box mr-2"></i>Productos ({{ $order->orderItems->count() }})
+                                        </h4>
+                                        
+                                        <div class="space-y-4">
+                                            @foreach($order->orderItems as $item)
+                                                <div class="flex items-center space-x-4 py-3 border-b border-gray-100 last:border-b-0">
+                                                    <div class="flex-shrink-0">
+                                                        @if($item->product && $item->product->images)
+                                                            <img src="{{ $item->product->images[0] }}" 
+                                                                 alt="{{ $item->product_name }}" 
+                                                                 class="w-16 h-16 object-cover rounded-lg">
+                                                        @else
+                                                            <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+                                                                <i class="fas fa-image text-gray-400"></i>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <div class="flex-1 min-w-0">
+                                                        <h5 class="text-sm font-medium text-gray-900 truncate">{{ $item->product_name }}</h5>
+                                                        <p class="text-xs text-gray-500">SKU: {{ $item->product_sku }}</p>
+                                                    </div>
+                                                    <div class="flex items-center space-x-4">
+                                                        <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2 py-1 rounded">
+                                                            {{ $item->quantity }}
+                                                        </span>
+                                                        <span class="text-sm font-semibold text-gray-900">
+                                                            ${{ number_format($item->total, 2) }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Resumen -->
+                                    <div class="bg-gray-50 p-4 rounded-lg">
+                                        <h4 class="text-sm font-medium text-gray-500 mb-4 flex items-center">
+                                            <i class="fas fa-info-circle mr-2"></i>Resumen
+                                        </h4>
+                                        
+                                        <div class="space-y-2 text-sm">
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-600">Subtotal:</span>
+                                                <span class="font-medium">${{ number_format($order->subtotal, 2) }}</span>
+                                            </div>
+                                            
+                                            @if($order->tax > 0)
+                                                <div class="flex justify-between">
+                                                    <span class="text-gray-600">Impuestos:</span>
+                                                    <span class="font-medium">${{ number_format($order->tax, 2) }}</span>
+                                                </div>
+                                            @endif
+                                            
+                                            @if($order->shipping > 0)
+                                                <div class="flex justify-between">
+                                                    <span class="text-gray-600">Envío:</span>
+                                                    <span class="font-medium">${{ number_format($order->shipping, 2) }}</span>
+                                                </div>
+                                            @else
+                                                <div class="flex justify-between text-green-600">
+                                                    <span class="flex items-center">
+                                                        <i class="fas fa-gift mr-1"></i>Envío:
+                                                    </span>
+                                                    <span class="font-medium">GRATIS</span>
+                                                </div>
+                                            @endif
+                                            
+                                            <hr class="my-3">
+                                            <div class="flex justify-between text-base font-semibold">
+                                                <span>Total:</span>
+                                                <span class="text-green-600">${{ number_format($order->total, 2) }}</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-4 space-y-2">
+                                            <a href="{{ route('orders.show', $order) }}" 
+                                               class="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 text-sm font-medium flex items-center justify-center">
+                                                <i class="fas fa-eye mr-1"></i>Ver Detalles
+                                            </a>
+                                            
+                                            @if($order->status == 'pending')
+                                                <a href="{{ route('orders.show', $order) }}" 
+                                                   class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm font-medium flex items-center justify-center">
+                                                    <i class="fas fa-credit-card mr-1"></i>Pagar Ahora
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    @endif
-                @else
-                    <!-- Empty State -->
-                    <div class="empty-state">
-                        <i class="fas fa-receipt"></i>
-                        <h3>No tienes pedidos aún</h3>
-                        <p class="lead">Comienza a comprar y tus pedidos aparecerán aquí</p>
-                        <a href="{{ route('home') }}" class="btn btn-primary btn-lg">
-                            <i class="fas fa-shopping-bag me-2"></i>Explorar Productos
-                        </a>
+                    @endforeach
+                </div>
+                
+                <!-- Paginación -->
+                @if($orders->hasPages())
+                    <div class="flex justify-center mt-6">
+                        {{ $orders->links() }}
                     </div>
                 @endif
-            </div>
+            @else
+                <!-- Estado vacío -->
+                <div class="text-center py-12">
+                    <div class="text-6xl mb-4">📋</div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">No tienes pedidos aún</h3>
+                    <p class="text-gray-500 mb-6">Comienza a comprar y tus pedidos aparecerán aquí</p>
+                    <a href="{{ route('home') }}" class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 inline-flex items-center">
+                        <i class="fas fa-shopping-bag mr-2"></i>Explorar Productos
+                    </a>
+                </div>
+            @endif
         </div>
     </div>
-
-    <!-- Footer -->
-    <footer class="bg-dark text-light py-4 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5><i class="fas fa-shopping-bag me-2"></i>Ecommerce</h5>
-                    <p class="mb-0">Tu tienda online de confianza</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="mb-0">&copy; {{ date('Y') }} Ecommerce. Todos los derechos reservados.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
