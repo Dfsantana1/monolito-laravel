@@ -1,9 +1,34 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Catálogo de Productos') }}
-        </h2>
-    </x-slot>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Productos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <h1 class="text-3xl font-bold text-gray-900">Mi Tienda</h1>
+                <nav class="flex space-x-4">
+                    @if(auth()->check())
+                        <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-gray-900">Dashboard</a>
+                        <a href="{{ route('cart.index') }}" class="text-gray-700 hover:text-gray-900">Carrito</a>
+                        <a href="{{ route('orders.index') }}" class="text-gray-700 hover:text-gray-900">Mis Órdenes</a>
+                        <form method="POST" action="{{ route('logout') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="text-gray-700 hover:text-gray-900">Cerrar Sesión</button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="text-gray-700 hover:text-gray-900">Iniciar Sesión</a>
+                        <a href="{{ route('register') }}" class="text-gray-700 hover:text-gray-900">Registrarse</a>
+                    @endif
+                </nav>
+            </div>
+        </div>
+    </header>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -59,9 +84,16 @@
                 @forelse($products as $product)
                     <div class="bg-white overflow-hidden shadow-sm rounded-lg hover:shadow-md transition-shadow">
                         <div class="aspect-w-1 aspect-h-1">
-                            <img src="https://via.placeholder.com/300x300?text={{ urlencode($product->name) }}" 
-                                 alt="{{ $product->name }}" 
-                                 class="w-full h-48 object-cover">
+                            @if(!empty($product->images) && is_array($product->images))
+                                <img src="{{ $product->images[0] }}" 
+                                     alt="{{ $product->name }}" 
+                                     class="w-full h-48 object-cover"
+                                     onerror="this.src='https://via.placeholder.com/300x300?text={{ urlencode($product->name) }}'">
+                            @else
+                                <img src="https://via.placeholder.com/300x300?text={{ urlencode($product->name) }}" 
+                                     alt="{{ $product->name }}" 
+                                     class="w-full h-48 object-cover">
+                            @endif
                         </div>
                         
                         <div class="p-4">
@@ -93,7 +125,7 @@
                             <div class="flex justify-between items-center">
                                 <span class="text-sm text-gray-500">Stock: {{ $product->stock }}</span>
                                 
-                                @auth
+                                @if(auth()->check())
                                     <form action="{{ route('cart.add', $product) }}" method="POST" class="inline">
                                         @csrf
                                         <input type="hidden" name="quantity" value="1" min="1" max="{{ $product->stock }}">
@@ -108,7 +140,7 @@
                                        class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm">
                                         Iniciar sesión
                                     </a>
-                                @endauth
+                                @endif
                             </div>
                             
                             <div class="mt-3">
@@ -132,4 +164,5 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</body>
+</html>
