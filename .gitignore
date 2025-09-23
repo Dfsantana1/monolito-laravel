@@ -22,3 +22,36 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Microservices specific ignores
+microservices/frontend/node_modules/
+microservices/services/*/node_modules/
+microservices/services/*/vendor/
+microservices/services/*/storage/
+microservices/services/*/bootstrap/cache/
+microservices/services/*/.env
+microservices/services/*/.env.local
+microservices/services/*/.env.production
+microservices/services/*/composer.lock
+microservices/services/*/package-lock.json
+
+# Docker and deployment files
+microservices/*/Dockerfile.dev
+microservices/*/docker-compose.override.yml
+microservices/*/.dockerignore
+
+# Logs and temporary files
+microservices/*/logs/
+microservices/*/tmp/
+microservices/*/temp/
+
+# IDE and editor files
+microservices/*/.vscode/
+microservices/*/.idea/
+microservices/*/.fleet/
+microservices/*/.nova/
+microservices/*/.zed/
+
+# OS generated files
+microservices/*/.DS_Store
+microservices/*/Thumbs.db

@@ -1,0 +1,48 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: microservices
+
+resources:
+  # Namespace
+  - namespaces/microservices-namespace.yaml
+  
+  # ConfigMaps and Secrets
+  - configmaps/app-config.yaml
+  - secrets/app-secrets.yaml
+  
+  # Persistent Volumes
+  - persistent-volumes/mysql-pvc.yaml
+  
+  # Deployments
+  - deployments/mysql-deployment.yaml
+  - deployments/user-service-deployment.yaml
+  - deployments/product-service-deployment.yaml
+  - deployments/cart-service-deployment.yaml
+  - deployments/order-service-deployment.yaml
+  - deployments/payment-service-deployment.yaml
+  - deployments/notification-service-deployment.yaml
+  - deployments/redis-deployment.yaml
+  - deployments/mongo-deployment.yaml
+  - deployments/rabbitmq-deployment.yaml
+  - deployments/frontend-deployment.yaml
+  
+  # Services
+  - services/mysql-service.yaml
+  - services/user-service-service.yaml
+  - services/product-service-service.yaml
+  - services/cart-service-service.yaml
+  - services/order-service-service.yaml
+  - services/payment-service-service.yaml
+  - services/notification-service-service.yaml
+  - services/redis-service.yaml
+  - services/mongo-service.yaml
+  - services/rabbitmq-service.yaml
+  - services/frontend-service.yaml
+  
+  # Ingress
+  - ingress/api-ingress.yaml
+
+commonLabels:
+  app: ecommerce-microservices
+  version: v1.0.0
