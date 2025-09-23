@@ -6,6 +6,9 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\FirebaseController;
+
+Route::middleware('web')->post('/auth/firebase/callback', [FirebaseController::class, 'callback'])->name('auth.firebase.callback');
 
 // Página principal - catálogo de productos
 Route::get('/', [ProductController::class, 'index'])->name('home');
