@@ -79,8 +79,7 @@ $app->configure('jwt');
 // ]);
 
 $app->routeMiddleware([
-    'auth' => App\Http\Middleware\Authenticate::class,
-    'jwt.auth' => Tymon\JWTAuth\Http\Middleware\Authenticate::class,
+    'jwt.auth' => App\Http\Middleware\Authenticate::class,
 ]);
 
 /*

@@ -1,0 +1,106 @@
+services:
+  # Lightweight API Gateway using Nginx instead of Kong
+  api-gateway:
+    image: nginx:alpine
+    ports:
+      - "8000:80"
+    volumes:
+      - ./infrastructure/nginx/api-gateway.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - user-service
+      - product-service
+      - cart-service
+      - order-service
+      - payment-service
+    networks:
+      - microservices-network
+
+  # User Service (PHP-FPM served via built-in server for simplicity)
+  user-service:
+    build: ./services/user-service
+    environment:
+      - DB_CONNECTION=sqlite
+      - DB_DATABASE=/var/www/database/database.sqlite
+      - JWT_SECRET=your-jwt-secret-key
+    command: sh -c "mkdir -p /var/www/database && touch /var/www/database/database.sqlite && php -S 0.0.0.0:8001 -t public"
+    volumes:
+      - user_db:/var/www/database
+    networks:
+      - microservices-network
+
+  # Product Service
+  product-service:
+    build: ./services/product-service
+    environment:
+      - DB_CONNECTION=sqlite
+      - DB_DATABASE=/var/www/database/database.sqlite
+    command: sh -c "mkdir -p /var/www/database && touch /var/www/database/database.sqlite && php -S 0.0.0.0:8002 -t public"
+    volumes:
+      - product_db:/var/www/database
+    networks:
+      - microservices-network
+
+  # Cart Service (uses Redis)
+  cart-service:
+    build: ./services/cart-service
+    environment:
+      - REDIS_HOST=redis
+      - PRODUCT_SERVICE_URL=http://product-service:8002
+      - USER_SERVICE_URL=http://user-service:8001
+    depends_on:
+      redis:
+        condition: service_started
+      product-service:
+        condition: service_started
+    networks:
+      - microservices-network
+
+  # Order Service
+  order-service:
+    build: ./services/order-service
+    environment:
+      - DB_CONNECTION=sqlite
+      - DB_DATABASE=/var/www/database/database.sqlite
+      - USER_SERVICE_URL=http://user-service:8001
+      - PRODUCT_SERVICE_URL=http://product-service:8002
+    command: sh -c "mkdir -p /var/www/database && touch /var/www/database/database.sqlite && php -S 0.0.0.0:8004 -t public"
+    volumes:
+      - order_db:/var/www/database
+    depends_on:
+      - user-service
+      - product-service
+    networks:
+      - microservices-network
+
+  # Payment Service
+  payment-service:
+    build: ./services/payment-service
+    environment:
+      - DB_CONNECTION=sqlite
+      - DB_DATABASE=/var/www/database/database.sqlite
+      - ORDER_SERVICE_URL=http://order-service:8004
+    command: sh -c "mkdir -p /var/www/database && touch /var/www/database/database.sqlite && php -S 0.0.0.0:8005 -t public"
+    volumes:
+      - payment_db:/var/www/database
+    depends_on:
+      - order-service
+    networks:
+      - microservices-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    networks:
+      - microservices-network
+
+volumes:
+  user_db:
+  product_db:
+  order_db:
+  payment_db:
+
+networks:
+  microservices-network:
+    driver: bridge
+
+

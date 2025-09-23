@@ -1,27 +1,16 @@
-FROM php:8.2-fpm
+FROM php:8.1-fpm-alpine
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apk add --no-cache \
     git \
     curl \
     libpng-dev \
-    libonig-dev \
     libxml2-dev \
     zip \
     unzip \
-    libzip-dev \
-    libfreetype6-dev \
-    libjpeg62-turbo-dev \
-    libmcrypt-dev \
-    libgd-dev \
-    jpegoptim optipng pngquant gifsicle \
-    vim \
-    unzip \
-    git \
-    curl
-
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+    mysql-client \
+    oniguruma-dev \
+    libzip-dev
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
@@ -36,7 +25,7 @@ WORKDIR /var/www
 COPY . /var/www
 
 # Copy existing application directory permissions
-COPY --chown=www-data:www-data . /var/www
+RUN chown -R www-data:www-data /var/www
 
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader
@@ -47,5 +36,9 @@ USER www-data
 # Expose port 8001
 EXPOSE 8001
 
-# Start PHP-FPM server
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8001/health || exit 1
+
+# Start the application
 CMD ["php", "-S", "0.0.0.0:8001", "-t", "public"]

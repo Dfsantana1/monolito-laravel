@@ -4,9 +4,10 @@ let redisClient;
 
 const connectRedis = async () => {
     try {
+        const redisUrl = process.env.REDIS_URL || `redis://${process.env.REDIS_HOST || 'localhost'}:${process.env.REDIS_PORT || 6379}`;
+        
         redisClient = redis.createClient({
-            host: process.env.REDIS_HOST || 'localhost',
-            port: process.env.REDIS_PORT || 6379,
+            url: redisUrl,
             password: process.env.REDIS_PASSWORD || undefined,
             retry_strategy: (options) => {
                 if (options.error && options.error.code === 'ECONNREFUSED') {
