@@ -1,0 +1,182 @@
+services:
+  # API Gateway
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+    depends_on:
+      - user-service
+      - product-service
+      - cart-service
+      - order-service
+      - payment-service
+      - notification-service
+    networks:
+      - microservices-network
+
+  # User Service
+  user-service:
+    build: ./services/user-service
+    ports:
+      - "8001:8001"
+    environment:
+      - DB_HOST=mysql
+      - DB_DATABASE=user_service
+      - DB_USERNAME=root
+      - DB_PASSWORD=password
+      - JWT_SECRET=your-jwt-secret-key
+    depends_on:
+      - mysql
+    networks:
+      - microservices-network
+
+  # Product Service
+  product-service:
+    build: ./services/product-service
+    ports:
+      - "8002:8002"
+    environment:
+      - DB_HOST=mysql
+      - DB_DATABASE=product_service
+      - DB_USERNAME=root
+      - DB_PASSWORD=password
+    depends_on:
+      - mysql
+    networks:
+      - microservices-network
+
+  # Cart Service
+  cart-service:
+    build: ./services/cart-service
+    ports:
+      - "8003:8003"
+    environment:
+      - REDIS_HOST=redis
+      - PRODUCT_SERVICE_URL=http://product-service:8002
+      - USER_SERVICE_URL=http://user-service:8001
+    depends_on:
+      - redis
+      - product-service
+    networks:
+      - microservices-network
+
+  # Order Service
+  order-service:
+    build: ./services/order-service
+    ports:
+      - "8004:8004"
+    environment:
+      - DB_HOST=mysql
+      - DB_DATABASE=order_service
+      - DB_USERNAME=root
+      - DB_PASSWORD=password
+      - USER_SERVICE_URL=http://user-service:8001
+      - PRODUCT_SERVICE_URL=http://product-service:8002
+    depends_on:
+      - mysql
+      - user-service
+      - product-service
+    networks:
+      - microservices-network
+
+  # Payment Service
+  payment-service:
+    build: ./services/payment-service
+    ports:
+      - "8005:8005"
+    environment:
+      - DB_HOST=mysql
+      - DB_DATABASE=payment_service
+      - DB_USERNAME=root
+      - DB_PASSWORD=password
+      - ORDER_SERVICE_URL=http://order-service:8004
+    depends_on:
+      - mysql
+      - order-service
+    networks:
+      - microservices-network
+
+  # Notification Service
+  notification-service:
+    build: ./services/notification-service
+    ports:
+      - "8006:8006"
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/notification_service
+      - RABBITMQ_HOST=rabbitmq
+    depends_on:
+      - mongo
+      - rabbitmq
+    networks:
+      - microservices-network
+
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=user_service
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./infrastructure/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - microservices-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - microservices-network
+
+  # MongoDB
+  mongo:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - microservices-network
+
+  # RabbitMQ Message Broker
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - microservices-network
+
+  # Frontend (React SPA)
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    depends_on:
+      - api-gateway
+    networks:
+      - microservices-network
+
+volumes:
+  mysql_data:
+  redis_data:
+  mongo_data:
+  rabbitmq_data:
+
+networks:
+  microservices-network:
+    driver: bridge
