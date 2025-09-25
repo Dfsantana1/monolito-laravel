@@ -1,0 +1,16 @@
+.git
+.gitignore
+README.md
+.env
+.env.example
+.env.docker
+.phpunit.result.cache
+Dockerfile*
+docker-compose*
+node_modules
+npm-debug.log*
+vendor
+storage/logs/*
+!storage/logs/.gitkeep
+bootstrap/cache/*
+!bootstrap/cache/.gitkeep
